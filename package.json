@@ -1,0 +1,25 @@
+
+{
+  "name": "flop-ai-agent",
+  "version": "1.0.0",
+  "description": "Community-built FLOP Network Intelligence Toolkit",
+  "main": "agent.mjs",
+  "scripts": {
+    "start": "node agent.mjs",
+    "research": "node research.mjs",
+    "mcp-check": "node mcp-check.mjs",
+    "check-models": "node check-models.mjs"
+  },
+  "keywords": [
+    "flop",
+    "blockchain",
+    "ai",
+    "mcp",
+    "network-intelligence"
+  ],
+  "author": "Community",
+  "license": "MIT",
+  "dependencies": {
+    "@flop-labs/client": "^0.2.2"
+  }
+}
