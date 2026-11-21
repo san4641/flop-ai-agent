@@ -1,11 +1,14 @@
 
+
 {
   "name": "flop-ai-agent",
   "version": "1.0.0",
   "description": "Community-built FLOP Network Intelligence Toolkit",
-  "main": "agent.mjs",
+  "main": "server.mjs",
   "scripts": {
-    "start": "node agent.mjs",
+    "start": "node server.mjs",
+    "dashboard": "node server.mjs",
+    "agent": "node agent.mjs",
     "research": "node research.mjs",
     "mcp-check": "node mcp-check.mjs",
     "check-models": "node check-models.mjs"
@@ -23,3 +26,4 @@
     "@flop-labs/client": "^0.2.2"
   }
 }
+
