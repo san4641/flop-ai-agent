@@ -2,18 +2,28 @@
 
 A community-built, read-only toolkit for exploring the FLOP Network through its hosted Model Context Protocol (MCP) service.
 
-This project helps users inspect network information, discover registered AI models, compare estimated pricing, search FLOP documentation, and explore miner recommendations.
+The project provides a web-based network intelligence dashboard and command-line research tools to help users explore network statistics, discover AI models, compare estimated pricing, and access FLOP knowledge resources.
 
 ## Features
 
-The V2 Intelligence Dashboard includes:
+### Web Dashboard V4
 
-1. **Network Health** — Check the hosted FLOP MCP service health.
-2. **Network Statistics** — Retrieve network statistics from the FLOP service.
-3. **Model Discovery** — Discover registered models and inspect their available information.
-4. **Pricing Comparison** — Compare estimated model costs for a token estimate.
-5. **Knowledge Search** — Search the FLOP knowledge catalog by topic.
-6. **Best Miner Finder** — Request miner recommendations using the balanced strategy.
+- **Network Health:** Check the hosted FLOP MCP service connection.
+- **Network Overview:** View reported block height, transactions, active operators, TPS, accounts, and HTLC statistics.
+- **Model Explorer:** Browse registered models and inspect serving status, online miners, capabilities, and available metadata.
+- **Model Search:** Search model records by name or hash.
+- **Pricing Comparison:** Compare estimated model costs and price per GFLOP.
+- **Data Refresh:** Reload information from the FLOP service.
+
+### Command-Line Research Tools
+
+The Research Agent provides additional functionality:
+
+- Search the FLOP knowledge catalog.
+- Discover available models.
+- Compare estimated model pricing.
+- Retrieve network statistics.
+- Request best-miner recommendations using the balanced strategy.
 
 ## Requirements
 
@@ -39,13 +49,19 @@ npm install
 
 ## Usage
 
-### Start the V2 Intelligence Dashboard
+### Start the Web Dashboard V4
 
 ```bash
-npm start
+node server.mjs
 ```
 
-Choose an option from the interactive menu to use the available features.
+Open your browser:
+
+```text
+http://localhost:3000
+```
+
+Keep the terminal running while using the dashboard.
 
 ### Run the Research Agent
 
@@ -71,32 +87,34 @@ If PowerShell blocks the `npm` command, use `npm.cmd` instead:
 
 ```powershell
 npm.cmd install
-npm.cmd start
-```
-
-Other commands:
-
-```powershell
 npm.cmd run research
 npm.cmd run mcp-check
 npm.cmd run check-models
 ```
 
+To start the web dashboard:
+
+```powershell
+node server.mjs
+```
+
 ## Safety
 
-- The hosted MCP integration used by the V2 dashboard is read-only.
+- The dashboard uses a read-only integration.
 - No wallet connection or transaction signing is required.
 - Never share seed phrases, private keys, or wallet passwords.
 - The dashboard does not submit paid inference tasks or create HTLC transactions.
 - Pricing information is indicative metadata, not a guaranteed payment quote.
 - Registered models are not necessarily available for inference.
-- Miner recommendations are based on data returned by the FLOP service and are not independently verified benchmarks.
+- Miner recommendations are based on information returned by the FLOP service and are not independently verified benchmarks.
 
 ## Project Structure
 
 | File | Purpose |
 |---|---|
-| `agent.mjs` | V2 Intelligence Dashboard |
+| `server.mjs` | Web dashboard backend and MCP integration |
+| `public/index.html` | Dashboard user interface |
+| `agent.mjs` | Original command-line dashboard |
 | `research.mjs` | Research Agent |
 | `mcp-check.mjs` | MCP connectivity checks |
 | `check-models.mjs` | Model discovery checks |
@@ -104,9 +122,14 @@ npm.cmd run check-models
 
 ## Contributing
 
-Contributions, bug reports, and suggestions are welcome.
+Contributions, bug reports, feature requests, and suggestions are welcome.
 
-Please test your changes before submitting a pull request.
+If you would like to contribute:
+
+1. Fork this repository.
+2. Create a new branch for your changes.
+3. Test your changes locally.
+4. Submit a pull request with a clear description.
 
 ## Disclaimer
 
