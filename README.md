@@ -95,7 +95,7 @@ npm.cmd run check-models
 To start the web dashboard:
 
 ```powershell
-node server.mjs
+npm.cmd start
 ```
 
 ## Safety
