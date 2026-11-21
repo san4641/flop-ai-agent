@@ -25,7 +25,7 @@ A community-focused toolkit for exploring the FLOP Network.
 Clone the repository:
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+git clone https://github.com/san4641/flop-ai-agent.git
 cd flop-ai-agent
 ```
 
