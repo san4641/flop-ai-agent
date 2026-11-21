@@ -1,5 +1,7 @@
 # FLOP Network Intelligence Toolkit
+## Dashboard Preview
 
+![FLOP Network Intelligence Dashboard](screenshots/dashboard-overview.png)
 A community-built, read-only toolkit for exploring the FLOP Network through its hosted Model Context Protocol (MCP) service.
 
 The project provides a web-based network intelligence dashboard and command-line research tools to help users explore network statistics, discover AI models, compare estimated pricing, and access FLOP knowledge resources.
