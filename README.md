@@ -1,17 +1,19 @@
-
 # FLOP Network Intelligence Toolkit
 
-A community-focused toolkit for exploring the FLOP Network.
+A community-built, read-only toolkit for exploring the FLOP Network through its hosted Model Context Protocol (MCP) service.
+
+This project helps users inspect network information, discover registered AI models, compare estimated pricing, search FLOP documentation, and explore miner recommendations.
 
 ## Features
 
-- Check FLOP Network connectivity
-- Discover available AI models
-- View model details and context length
-- Compare estimated model pricing
-- Explore network statistics
-- Search the FLOP knowledge catalog
-- Find miner recommendations using the FLOP MCP service
+The V2 Intelligence Dashboard includes:
+
+1. **Network Health** — Check the hosted FLOP MCP service health.
+2. **Network Statistics** — Retrieve network statistics from the FLOP service.
+3. **Model Discovery** — Discover registered models and inspect their available information.
+4. **Pricing Comparison** — Compare estimated model costs for a token estimate.
+5. **Knowledge Search** — Search the FLOP knowledge catalog by topic.
+6. **Best Miner Finder** — Request miner recommendations using the balanced strategy.
 
 ## Requirements
 
@@ -37,38 +39,77 @@ npm install
 
 ## Usage
 
-Start the FLOP dashboard:
+### Start the V2 Intelligence Dashboard
 
 ```bash
 npm start
 ```
 
-Start the research agent:
+Choose an option from the interactive menu to use the available features.
+
+### Run the Research Agent
 
 ```bash
 npm run research
 ```
 
-Run MCP checks:
+### Run MCP Checks
 
 ```bash
 npm run mcp-check
 ```
 
+### Check Available Models
+
+```bash
+npm run check-models
+```
+
+## Windows PowerShell
+
+If PowerShell blocks the `npm` command, use `npm.cmd` instead:
+
+```powershell
+npm.cmd install
+npm.cmd start
+```
+
+Other commands:
+
+```powershell
+npm.cmd run research
+npm.cmd run mcp-check
+npm.cmd run check-models
+```
+
 ## Safety
 
-The hosted FLOP MCP integration used by this project is read-only.
+- The hosted MCP integration used by the V2 dashboard is read-only.
+- No wallet connection or transaction signing is required.
+- Never share seed phrases, private keys, or wallet passwords.
+- The dashboard does not submit paid inference tasks or create HTLC transactions.
+- Pricing information is indicative metadata, not a guaranteed payment quote.
+- Registered models are not necessarily available for inference.
+- Miner recommendations are based on data returned by the FLOP service and are not independently verified benchmarks.
 
-This project does not require users to share seed phrases or private keys.
+## Project Structure
 
-Pricing information is indicative metadata, not a guaranteed payment quote. Miner recommendations are based on data returned by the FLOP service and are not independently verified benchmarks.
+| File | Purpose |
+|---|---|
+| `agent.mjs` | V2 Intelligence Dashboard |
+| `research.mjs` | Research Agent |
+| `mcp-check.mjs` | MCP connectivity checks |
+| `check-models.mjs` | Model discovery checks |
+| `package.json` | Project configuration and scripts |
 
-## Contribution
+## Contributing
 
 Contributions, bug reports, and suggestions are welcome.
 
-Please test changes before submitting a pull request.
+Please test your changes before submitting a pull request.
 
 ## Disclaimer
 
 This is a community-built project and is not an official FLOP Network product unless explicitly approved by the FLOP team.
+
+FLOP Network services and returned data may change over time. Always verify important information using official FLOP sources.

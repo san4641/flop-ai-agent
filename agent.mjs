@@ -1,154 +1,257 @@
 
-import { FlopClient } from "@flop-labs/client";
 import readline from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 
-const API = "https://api.flop.network/v1";
-
-const client = new FlopClient({
-  baseURL: API
-});
+const MCP_URL = "https://mcp.flop.network/mcp";
+const REQUEST_TIMEOUT = 15000;
 
 const rl = readline.createInterface({ input, output });
 
-let models = [];
-let online = false;
-let lastCheck = "Not checked yet";
+let requestId = 1;
+let connected = false;
 
-async function checkNetwork() {
-  console.log("\nChecking FLOP Network...");
+async function mcpRequest(method, params = {}) {
+  const response = await fetch(MCP_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json, text/event-stream"
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: requestId++,
+      method,
+      params
+    }),
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT)
+  });
+
+
+  const body = await response.text();
+
+  if (!response.ok) {
+    throw new Error(`MCP HTTP ${response.status}: ${body}`);
+  }
+
+  if (!body.trim()) return null;
+
+  let data;
+
+  // Handle both JSON and Server-Sent Events (SSE)
+  const dataLines = body
+    .split(/\r?\n/)
+    .filter(line => line.startsWith("data:"));
+
+  if (dataLines.length > 0) {
+    const dataText = dataLines
+      .map(line => line.slice(5).trim())
+      .join("\n");
+
+    data = JSON.parse(dataText);
+  } else {
+    data = JSON.parse(body);
+  }
+
+  if (data.error) {
+    throw new Error(data.error.message || "MCP error");
+  }
+
+  return data.result;
+
+}
+
+async function callTool(name, args = {}) {
+  const result = await mcpRequest("tools/call", {
+    name,
+    arguments: args
+  });
+
+  if (result?.isError) {
+    const message = result.content
+      ?.map(item => item.text || "")
+      .join("\n");
+
+    throw new Error(message || "Tool operation failed.");
+  }
+
+  return result;
+}
+
+function printResult(result) {
+  if (result?.content) {
+    for (const item of result.content) {
+      if (item.text) console.log(item.text);
+    }
+  } else {
+    console.log(JSON.stringify(result, null, 2));
+  }
+}
+
+async function initialize() {
+  await mcpRequest("initialize", {
+    protocolVersion: "2025-03-26",
+    capabilities: {},
+    clientInfo: {
+      name: "flop-intelligence-dashboard",
+      version: "2.0.0"
+    }
+  });
+
+  const response = await fetch(MCP_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json, text/event-stream"
+    },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      method: "notifications/initialized",
+      params: {}
+    }),
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT)
+  });
+
+  if (!response.ok) {
+    throw new Error(`Initialization notification failed: HTTP ${response.status}`);
+  }
+
+  connected = true;
+}
+
+async function runTool(title, name, args = {}) {
+  console.log(`\n========== ${title} ==========\n`);
+  printResult(await callTool(name, args));
+}
+
+async function networkHealth() {
+  await runTool("NETWORK HEALTH", "flop_health");
+}
+
+async function networkStats() {
+  await runTool("NETWORK STATISTICS", "flop_get_stats");
+}
+
+async function discoverModels() {
+  await runTool("MODEL DISCOVERY", "flop_discover_models", {
+    max_results: 20
+  });
+}
+
+async function comparePricing() {
+  await runTool("MODEL PRICING COMPARISON", "flop_compare_pricing", {
+    tokens_estimate: 1000
+  });
+}
+
+async function searchKnowledge() {
+  const query = (await rl.question("\nEnter research topic: ")).trim();
+
+  if (!query) {
+    console.log("Search topic cannot be empty.");
+    return;
+  }
+
+  await runTool("FLOP KNOWLEDGE SEARCH", "flop_knowledge_search", {
+    query,
+    limit: 10
+  });
+}
+
+async function findBestMiner() {
+  const modelHash = (await rl.question("\nEnter model hash: ")).trim();
+
+  if (!modelHash) {
+    console.log("Model hash cannot be empty.");
+    return;
+  }
+
+  await runTool("BEST MINER FINDER", "flop_find_best_miner", {
+    model_hash: modelHash,
+    strategy: "balanced"
+  });
+}
+
+function showMenu() {
+  console.log("\n==========================================");
+  console.log("       FLOP NETWORK INTELLIGENCE");
+  console.log("==========================================");
+  console.log("Connection :", connected ? "CONNECTED" : "DISCONNECTED");
+  console.log("------------------------------------------");
+  console.log("1. Network Health");
+  console.log("2. Network Statistics");
+  console.log("3. Discover Models");
+  console.log("4. Compare Model Pricing");
+  console.log("5. Search FLOP Knowledge");
+  console.log("6. Find Best Miner");
+  console.log("7. Exit");
+  console.log("==========================================");
+}
+
+async function main() {
+  console.log("\nStarting FLOP Network Intelligence Dashboard...");
+  console.log("Mode: Read-only");
+  console.log("Wallet: Not connected");
+  console.log("Signing and payments: Disabled");
 
   try {
-    const response = await fetch(`${API}/models`);
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    const result = await response.json();
-
-    models = result.data ?? [];
-    online = true;
-    lastCheck = new Date().toLocaleString();
-
-    console.log("Connection successful!");
-    console.log("Models found:", models.length);
-
+    await initialize();
+    console.log("\nMCP connection successful!");
   } catch (error) {
-    online = false;
-    console.log("Connection failed:", error.message);
-  }
-}
-
-function showDashboard() {
-  console.clear();
-
-  console.log("======================================");
-  console.log("       FLOP NETWORK DASHBOARD");
-  console.log("======================================");
-
-  console.log("NETWORK STATUS :", online ? "ONLINE" : "OFFLINE");
-  console.log("TOTAL MODELS   :", models.length);
-  console.log("LAST CHECK     :", lastCheck);
-
-  console.log("\n1. Check Network");
-  console.log("2. Show Available Models");
-  console.log("3. Show Model Details");
-  console.log("4. Show Pricing and Capacity");
-  console.log("5. Exit");
-
-  console.log("======================================");
-}
-
-function showModels() {
-  console.log("\n========== AVAILABLE MODELS ==========");
-
-  if (!models.length) {
-    console.log("No model data available.");
+    console.log("\nMCP connection failed:", error.message);
     return;
   }
-
-  models.forEach((model, index) => {
-    console.log(`\n${index + 1}. ${model.name}`);
-    console.log("ID:", model.id);
-  });
-}
-
-function showDetails() {
-  console.log("\n========== MODEL DETAILS ==========");
-
-  models.forEach((model, index) => {
-    console.log(`\n${index + 1}. ${model.name}`);
-    console.log("Model ID:", model.id);
-    console.log("Owner:", model.owned_by ?? "Unknown");
-    console.log("Context Length:", model.context_length ?? "Unknown");
-  });
-}
-
-function showPricing() {
-  console.log("\n========== PRICING & CAPACITY ==========");
-
-  if (!models.length) {
-    console.log("No model data available.");
-    return;
-  }
-
-  models.forEach((model, index) => {
-    const pricing = model.pricing ?? {};
-   const capacity =
-  model.measurements?.capacity_tpm?.value ??
-  model["x-flop"]?.capacity_tpm ??
-  "Not available";
-
-    console.log(`\n${index + 1}. ${model.name}`);
-    console.log("Prompt pricing:", pricing.prompt ?? "Not available");
-    console.log("Completion pricing:", pricing.completion ?? "Not available");
-    console.log(
-      "Capacity (tokens/min):",
-      capacity ?? "Not available"
-    );
-
-    console.log("--------------------------------------");
-  });
-
-  console.log("\nNote: Pricing is devnet metadata, not a verified payment quote.");
-}
-
-async function startAgent() {
-  await checkNetwork();
 
   while (true) {
-    showDashboard();
+    showMenu();
 
-    const choice = await rl.question("\nChoose an option (1-5): ");
+    const choice = (await rl.question("\nChoose an option (1-7): ")).trim();
 
-    if (choice === "1") {
-      await checkNetwork();
-      await rl.question("\nPress Enter to continue...");
+    try {
+      switch (choice) {
+        case "1":
+          await networkHealth();
+          break;
 
-    } else if (choice === "2") {
-      showModels();
-      await rl.question("\nPress Enter to continue...");
+        case "2":
+          await networkStats();
+          break;
 
-    } else if (choice === "3") {
-      showDetails();
-      await rl.question("\nPress Enter to continue...");
+        case "3":
+          await discoverModels();
+          break;
 
-    } else if (choice === "4") {
-      showPricing();
-      await rl.question("\nPress Enter to continue...");
+        case "4":
+          await comparePricing();
+          break;
 
-    } else if (choice === "5") {
-      console.log("\nFLOP Dashboard closed. Goodbye!");
-      break;
+        case "5":
+          await searchKnowledge();
+          break;
 
-    } else {
-      console.log("\nInvalid option!");
-      await rl.question("Press Enter to continue...");
+        case "6":
+          await findBestMiner();
+          break;
+
+        case "7":
+          console.log("\nFLOP Dashboard closed. Goodbye!");
+          return;
+
+        default:
+          console.log("\nInvalid option. Choose 1 to 7.");
+      }
+    } catch (error) {
+      console.log("\nOperation failed:", error.message);
     }
-  }
 
-  rl.close();
+    await rl.question("\nPress Enter to return to menu...");
+  }
 }
 
-startAgent();
+main()
+  .catch(error => {
+    console.error("\nUnexpected error:", error.message);
+    process.exitCode = 1;
+  })
+  .finally(() => {
+    rl.close();
+  });
