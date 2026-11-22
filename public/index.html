@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FLOP Network Intelligence V4</title>
+
 <style>
 :root {
   --bg:#080d18; --panel:#111b2c; --panel2:#152238;
@@ -12,178 +12,495 @@
   --accent:#54dfc0; --blue:#75aaff; --green:#46d7a0;
   --red:#ff727e; --yellow:#f4c66b;
 }
+
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);
-font-family:Inter,Segoe UI,Arial,sans-serif}
-header{padding:25px 5%;border-bottom:1px solid var(--line);
-display:flex;justify-content:space-between;align-items:center;gap:15px}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,Segoe UI,Arial,sans-serif
+}
+
+header{
+  padding:25px 5%;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px
+}
+
 h1{font-size:25px;margin:0}
-.subtitle{color:var(--muted);font-size:13px;margin-top:6px}
-.status{border:1px solid var(--line);padding:9px 14px;border-radius:30px;
-font-size:12px;color:var(--yellow)}
-.status.online{color:var(--green);border-color:#246b56}
-main{max-width:1250px;margin:auto;padding:25px 22px 45px}
-.toolbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:25px}
-button{background:var(--accent);color:#061711;border:0;padding:11px 18px;
-border-radius:8px;font-weight:700;cursor:pointer}
-button:disabled{opacity:.55;cursor:wait}
-#updated{font-size:12px;color:var(--muted)}
+
+.subtitle{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:6px
+}
+
+.status{
+  border:1px solid var(--line);
+  padding:9px 14px;
+  border-radius:30px;
+  font-size:12px;
+  color:var(--yellow)
+}
+
+.status.online{
+  color:var(--green);
+  border-color:#246b56
+}
+
+main{
+  max-width:1250px;
+  margin:auto;
+  padding:25px 22px 45px
+}
+
+.toolbar{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-bottom:25px
+}
+
+button{
+  background:var(--accent);
+  color:#061711;
+  border:0;
+  padding:11px 18px;
+  border-radius:8px;
+  font-weight:700;
+  cursor:pointer
+}
+
+button:disabled{
+  opacity:.55;
+  cursor:wait
+}
+
+#updated{
+  font-size:12px;
+  color:var(--muted)
+}
+
 .section{margin-top:27px}
-.section h2{font-size:18px;margin:0 0 14px}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.card{background:var(--panel);border:1px solid var(--line);
-border-radius:13px;padding:18px;min-width:0}
-.metric-label{font-size:12px;color:var(--muted)}
-.metric-value{font-size:25px;font-weight:750;margin-top:12px;
-overflow-wrap:anywhere}
-.metric-note{font-size:11px;color:var(--muted);margin-top:7px}
-.panel{background:var(--panel);border:1px solid var(--line);
-border-radius:13px;padding:18px}
-.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:15px}
-input,select{background:var(--panel2);color:var(--text);
-border:1px solid var(--line);border-radius:8px;padding:11px 12px;
-outline:none}
-input{flex:1;min-width:190px}
+
+.section h2{
+  font-size:18px;
+  margin:0 0 14px
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px
+}
+
+.card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:18px;
+  min-width:0
+}
+
+.metric-label{
+  font-size:12px;
+  color:var(--muted)
+}
+
+.metric-value{
+  font-size:25px;
+  font-weight:750;
+  margin-top:12px;
+  overflow-wrap:anywhere
+}
+
+.metric-note{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:7px
+}
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:13px;
+  padding:18px
+}
+
+.controls{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:15px
+}
+
+input,select{
+  background:var(--panel2);
+  color:var(--text);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:11px 12px;
+  outline:none
+}
+
+input{
+  flex:1;
+  min-width:190px
+}
+
 select{min-width:150px}
-.model-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
-.model{background:var(--panel2);border:1px solid var(--line);
-border-radius:11px;padding:16px;min-width:0}
-.model h3{font-size:15px;margin:0 0 10px;overflow-wrap:anywhere}
-.model-id{font-size:10px;color:var(--muted);overflow-wrap:anywhere}
-.pills{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
-.pill{font-size:11px;padding:5px 8px;border-radius:20px;
-background:#263750;color:#c7d8ef}
-.pill.good{background:#123b32;color:#75e5bc}
-.pill.bad{background:#45232c;color:#ff9ca5}
-.details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-gap:10px;margin-top:12px}
-.detail{font-size:12px;color:var(--muted)}
-.detail strong{display:block;color:var(--text);margin-top:4px;
-overflow-wrap:anywhere}
+
+.model-list{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:13px
+}
+
+.model{
+  background:var(--panel2);
+  border:1px solid var(--line);
+  border-radius:11px;
+  padding:16px;
+  min-width:0
+}
+
+.model h3{
+  font-size:15px;
+  margin:0 0 10px;
+  overflow-wrap:anywhere
+}
+
+.model-id{
+  font-size:10px;
+  color:var(--muted);
+  overflow-wrap:anywhere
+}
+
+.pills{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin:12px 0
+}
+
+.pill{
+  font-size:11px;
+  padding:5px 8px;
+  border-radius:20px;
+  background:#263750;
+  color:#c7d8ef
+}
+
+.pill.good{
+  background:#123b32;
+  color:#75e5bc
+}
+
+.pill.bad{
+  background:#45232c;
+  color:#ff9ca5
+}
+
+.details{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin-top:12px
+}
+
+.detail{
+  font-size:12px;
+  color:var(--muted)
+}
+
+.detail strong{
+  display:block;
+  color:var(--text);
+  margin-top:4px;
+  overflow-wrap:anywhere
+}
+
 .table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:570px}
-th,td{text-align:left;padding:13px 10px;border-bottom:1px solid var(--line);
-font-size:12px}
-th{color:var(--muted);font-weight:600}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:570px
+}
+
+th,td{
+  text-align:left;
+  padding:13px 10px;
+  border-bottom:1px solid var(--line);
+  font-size:12px
+}
+
+th{
+  color:var(--muted);
+  font-weight:600
+}
+
 td{color:var(--text)}
-.notice{color:var(--muted);font-size:12px;line-height:1.6;margin-top:13px}
-.message{padding:18px;border:1px dashed var(--line);border-radius:10px;
-color:var(--muted);font-size:13px;line-height:1.6}
+
+.notice{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+  margin-top:13px
+}
+
+.message{
+  padding:18px;
+  border:1px dashed var(--line);
+  border-radius:10px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.6
+}
+
 .error{color:var(--red)}
-footer{text-align:center;padding:22px;border-top:1px solid var(--line);
-color:var(--muted);font-size:12px}
-@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+footer{
+  text-align:center;
+  padding:22px;
+  border-top:1px solid var(--line);
+  color:var(--muted);
+  font-size:12px
+}
+
+@media(max-width:850px){
+  .grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))
+  }
+}
+
 @media(max-width:600px){
- header{padding:20px;align-items:flex-start;flex-direction:column}
- main{padding:20px 14px 35px}
- .grid,.model-list{grid-template-columns:1fr}
- .metric-value{font-size:23px}
+  header{
+    padding:20px;
+    align-items:flex-start;
+    flex-direction:column
+  }
+
+  main{padding:20px 14px 35px}
+
+  .grid,.model-list{
+    grid-template-columns:1fr
+  }
+
+  .metric-value{font-size:23px}
 }
 </style>
 </head>
+
 <body>
+
 <header>
   <div>
     <h1>FLOP Network Intelligence</h1>
-    <div class="subtitle">Community-built network monitoring dashboard</div>
+    <div class="subtitle">
+      Community-built network monitoring dashboard
+    </div>
   </div>
-  <div id="connection" class="status">CHECKING CONNECTION</div>
+
+  <div id="connection" class="status">
+    CHECKING CONNECTION
+  </div>
 </header>
 
+<!-- MODEL DETAILS MODAL -->
+<div id="modelModal" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:rgba(0,0,0,.78);
+  padding:20px;
+  overflow-y:auto;
+" onclick="if(event.target === this) closeModelDetails()">
+
+  <div style="
+    max-width:700px;
+    margin:50px auto;
+    padding:25px;
+    background:#111b2c;
+    border:1px solid #263750;
+    border-radius:14px;
+    color:#edf4ff;
+  ">
+
+    <div style="
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:15px;
+    ">
+      <h2 id="modalTitle">Model Details</h2>
+      <button onclick="closeModelDetails()">Close</button>
+    </div>
+
+    <div id="modalContent"></div>
+
+  </div>
+</div>
+
 <main>
+
   <div class="toolbar">
-    <button id="refreshBtn" onclick="refreshDashboard()">Refresh Data</button>
+    <button id="refreshBtn" onclick="refreshDashboard()">
+      Refresh Data
+    </button>
+
     <span id="updated">Waiting for first update...</span>
   </div>
 
   <section class="section">
     <h2>Network Overview</h2>
+
     <div class="grid">
+
       <div class="card">
         <div class="metric-label">Network Health</div>
         <div class="metric-value" id="health">Loading...</div>
         <div class="metric-note">FLOP MCP health response</div>
       </div>
+
       <div class="card">
         <div class="metric-label">Latest Block</div>
         <div class="metric-value" id="block">—</div>
         <div class="metric-note">Latest reported block number</div>
       </div>
+
       <div class="card">
         <div class="metric-label">Transactions</div>
         <div class="metric-value" id="transactions">—</div>
         <div class="metric-note">Total reported transactions</div>
       </div>
+
       <div class="card">
         <div class="metric-label">Active Operators</div>
         <div class="metric-value" id="operators">—</div>
         <div class="metric-note">Reported active operators</div>
       </div>
+
       <div class="card">
         <div class="metric-label">Network TPS</div>
         <div class="metric-value" id="tps">—</div>
         <div class="metric-note">Reported transactions per second</div>
       </div>
+
       <div class="card">
         <div class="metric-label">Total Accounts</div>
         <div class="metric-value" id="accounts">—</div>
         <div class="metric-note">Reported network accounts</div>
       </div>
+
       <div class="card">
         <div class="metric-label">Active HTLCs</div>
         <div class="metric-value" id="htlcs">—</div>
         <div class="metric-note">Reported active HTLCs</div>
       </div>
+
       <div class="card">
         <div class="metric-label">24h Transaction Volume</div>
         <div class="metric-value" id="volume">—</div>
         <div class="metric-note">Reported 24-hour volume</div>
       </div>
+
     </div>
+
     <div id="statsMessage" class="notice"></div>
   </section>
 
   <section class="section">
     <h2>Model Explorer</h2>
+
     <div class="panel">
+
       <div class="controls">
-        <input id="modelSearch" type="search" placeholder="Search model name or hash..." oninput="renderModels()">
+        <input
+          id="modelSearch"
+          type="search"
+          placeholder="Search model name or hash..."
+          oninput="renderModels()"
+        >
+
         <select id="modelFilter" onchange="renderModels()">
           <option value="all">All models</option>
           <option value="serving">Serving</option>
           <option value="not-serving">Not serving</option>
         </select>
       </div>
-      <div id="modelSummary" class="notice">Loading model registry...</div>
+
+      <div id="modelSummary" class="notice">
+        Loading model registry...
+      </div>
+
       <div id="modelList" class="model-list"></div>
+
     </div>
   </section>
 
   <section class="section">
     <h2>Pricing Comparison</h2>
+
     <div class="panel">
-      <div id="pricingTable" class="message">Loading pricing information...</div>
-      <div class="notice">Pricing figures are estimates returned by the FLOP service. They are not guaranteed payment quotes.</div>
+      <div id="pricingTable" class="message">
+        Loading pricing information...
+      </div>
+
+      <div class="notice">
+        Pricing figures are estimates returned by the FLOP service.
+        They are not guaranteed payment quotes.
+      </div>
     </div>
   </section>
 
   <section class="section">
     <h2>Data Information</h2>
+
     <div class="panel">
       <div class="details">
-        <div class="detail">Dashboard Version<strong>V4.0</strong></div>
-        <div class="detail">Operating Mode<strong>Read-only</strong></div>
-        <div class="detail">Wallet<strong>Not connected</strong></div>
-        <div class="detail">Data Source<strong>FLOP MCP API</strong></div>
+
+        <div class="detail">
+          Dashboard Version<strong>V4.0</strong>
+        </div>
+
+        <div class="detail">
+          Operating Mode<strong>Read-only</strong>
+        </div>
+
+        <div class="detail">
+          Wallet<strong>Not connected</strong>
+        </div>
+
+        <div class="detail">
+          Data Source<strong>FLOP MCP API</strong>
+        </div>
+
       </div>
-      <p class="notice">Registered models and serving models are different. A model can be registered without currently serving requests. The dashboard displays the status reported by the FLOP service.</p>
+
+      <p class="notice">
+        Registered models and serving models are different.
+        A model can be registered without currently serving requests.
+        The dashboard displays the status reported by the FLOP service.
+      </p>
     </div>
   </section>
+
 </main>
 
-<footer>FLOP Network Intelligence Toolkit · Community project · Read-only mode · No wallet connected</footer>
+<footer>
+  FLOP Network Intelligence Toolkit · Community project ·
+  Read-only mode · No wallet connected
+</footer>
 
 <script>
+
 const state = {
   models: [],
   pricing: [],
@@ -195,39 +512,63 @@ function byId(id) {
 }
 
 function safeText(value, fallback = "—") {
-  if (value === null || value === undefined || value === "") return fallback;
+  if (value === null || value === undefined || value === "") {
+    return fallback;
+  }
   return String(value);
 }
 
 function numberText(value) {
-  if (value === null || value === undefined || value === "") return "—";
+  if (value === null || value === undefined || value === "") {
+    return "—";
+  }
+
   const n = Number(value);
-  return Number.isFinite(n) ? n.toLocaleString() : String(value);
+
+  return Number.isFinite(n)
+    ? n.toLocaleString()
+    : String(value);
 }
 
 function compactText(value) {
-  if (value === null || value === undefined || value === "") return "—";
+  if (value === null || value === undefined || value === "") {
+    return "—";
+  }
+
   const n = Number(value);
-  return Number.isFinite(n) ? Intl.NumberFormat("en", {
-    notation: "compact", maximumFractionDigits: 2
-  }).format(n) : String(value);
+
+  return Number.isFinite(n)
+    ? Intl.NumberFormat("en", {
+        notation: "compact",
+        maximumFractionDigits: 2
+      }).format(n)
+    : String(value);
 }
 
 function parseText(text) {
   if (typeof text !== "string") return text;
+
   const trimmed = text.trim();
+
   if (!trimmed) return text;
-  try { return JSON.parse(trimmed); }
-  catch { return text; }
+
+  try {
+    return JSON.parse(trimmed);
+  } catch {
+    return text;
+  }
 }
 
 function unwrap(raw) {
   let value = raw;
 
   for (let i = 0; i < 5; i++) {
+
     if (typeof value === "string") {
       const parsed = parseText(value);
+
       if (parsed === value) break;
+
       value = parsed;
       continue;
     }
@@ -247,92 +588,277 @@ function unwrap(raw) {
         continue;
       }
     }
+
     break;
   }
+
   return value;
 }
 
 async function apiGet(path) {
-  const response = await fetch(path, { cache: "no-store" });
+  const response = await fetch(path, {
+    cache: "no-store"
+  });
+
   const body = await response.text();
 
   let data;
-  try { data = JSON.parse(body); }
-  catch { throw new Error("Invalid response from " + path); }
+
+  try {
+    data = JSON.parse(body);
+  } catch {
+    throw new Error("Invalid response from " + path);
+  }
 
   if (!response.ok) {
     throw new Error(data.error || "HTTP " + response.status);
   }
-  if (data.error) throw new Error(data.error);
+
+  if (data.error) {
+    throw new Error(data.error);
+  }
 
   return unwrap(data);
 }
 
 function findStats(value) {
   if (!value) return null;
-  if (typeof value === "string") return findStats(parseText(value));
+
+  if (typeof value === "string") {
+    return findStats(parseText(value));
+  }
+
   if (Array.isArray(value)) {
     for (const item of value) {
       const found = findStats(item);
       if (found) return found;
     }
+
     return null;
   }
+
   if (typeof value !== "object") return null;
 
-  if (value.stats && typeof value.stats === "object") return value.stats;
+  if (value.stats && typeof value.stats === "object") {
+    return value.stats;
+  }
 
-  const keys = ["latestBlockNumber", "totalBlocks", "activeOperators",
-    "totalAccounts", "totalTransactions", "tps"];
-  if (keys.some(key => key in value)) return value;
+  const keys = [
+    "latestBlockNumber",
+    "totalBlocks",
+    "activeOperators",
+    "totalAccounts",
+    "totalTransactions",
+    "tps"
+  ];
 
-  if (value.content) return findStats(value.content);
+  if (keys.some(key => key in value)) {
+    return value;
+  }
+
+  if (value.content) {
+    return findStats(value.content);
+  }
+
   return null;
 }
 
 function setMetric(id, value) {
-  byId(id).textContent = value === undefined || value === null ? "—" : value;
+  byId(id).textContent =
+    value === undefined || value === null ? "—" : value;
 }
 
 function updateStats(raw) {
   const stats = findStats(raw);
 
   if (!stats) {
-    byId("statsMessage").textContent = "Statistics response received, but its fields were not recognized.";
+    byId("statsMessage").textContent =
+      "Statistics response received, but its fields were not recognized.";
     return;
   }
 
-  setMetric("block", numberText(stats.latestBlockNumber ?? stats.totalBlocks));
-  setMetric("transactions", compactText(stats.totalTransactions));
-  setMetric("operators", numberText(stats.activeOperators));
+  setMetric(
+    "block",
+    numberText(stats.latestBlockNumber ?? stats.totalBlocks)
+  );
+
+  setMetric(
+    "transactions",
+    compactText(stats.totalTransactions)
+  );
+
+  setMetric(
+    "operators",
+    numberText(stats.activeOperators)
+  );
+
   setMetric("tps", safeText(stats.tps));
-  setMetric("accounts", compactText(stats.totalAccounts));
-  setMetric("htlcs", numberText(stats.activeHTLCs));
-  setMetric("volume", compactText(stats.txVolume24h));
+
+  setMetric(
+    "accounts",
+    compactText(stats.totalAccounts)
+  );
+
+  setMetric(
+    "htlcs",
+    numberText(stats.activeHTLCs)
+  );
+
+  setMetric(
+    "volume",
+    compactText(stats.txVolume24h)
+  );
 
   byId("statsMessage").textContent =
     "Additional reported fields: 24h HTLCs: " +
-    numberText(stats.totalHTLCs) + " · 24h proofs: " +
-    numberText(stats.proofs24h) + " · Average block time: " +
+    numberText(stats.totalHTLCs) +
+    " · 24h proofs: " +
+    numberText(stats.proofs24h) +
+    " · Average block time: " +
     safeText(stats.avgBlockTime);
 }
 
 function findArray(value, possibleKeys) {
   if (!value) return [];
+
   if (Array.isArray(value)) return value;
-  if (typeof value === "string") return findArray(parseText(value), possibleKeys);
+
+  if (typeof value === "string") {
+    return findArray(parseText(value), possibleKeys);
+  }
+
   if (typeof value !== "object") return [];
 
   for (const key of possibleKeys) {
-    if (Array.isArray(value[key])) return value[key];
+    if (Array.isArray(value[key])) {
+      return value[key];
+    }
   }
-  if (value.content) return findArray(value.content, possibleKeys);
+
+  if (value.content) {
+    return findArray(value.content, possibleKeys);
+  }
+
   return [];
 }
 
 function modelName(model) {
-  return model.modelName || model.name || model.id || "Unnamed model";
+  return model.modelName ||
+    model.name ||
+    model.id ||
+    "Unnamed model";
 }
+
+/* FULL MODEL DETAILS POPUP */
+
+function showModelDetails(model) {
+  const modal = byId("modelModal");
+  const content = byId("modalContent");
+
+  byId("modalTitle").textContent = modelName(model);
+
+  content.replaceChildren();
+content.style.display = "grid";
+content.style.gridTemplateColumns = "repeat(2, minmax(0, 1fr))";
+if (window.innerWidth <= 600) {
+  content.style.gridTemplateColumns = "1fr";
+}
+content.style.gap = "12px";
+  const showValue = value => {
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
+      return "Not reported";
+    }
+
+    if (Array.isArray(value)) {
+      return value.length
+        ? value.join(", ")
+        : "Not reported";
+    }
+
+    if (typeof value === "object") {
+      return JSON.stringify(value);
+    }
+
+    return String(value);
+  };
+
+  const isServing =
+    model.served === true ||
+    Number(model.onlineMinerCount) > 0;
+
+  const details = [
+    ["Model Name", modelName(model)],
+    ["Model ID", model.id],
+    ["Model Hash", model.modelHash],
+    [
+      "Serving Status",
+      isServing ? "Serving" : "Not currently serving"
+    ],
+    ["Online Miners", model.onlineMinerCount],
+    ["GPU / TEE Platforms", model.teePlatforms],
+    [
+      "Average Latency",
+      model.avgLatencyMs == null
+        ? null
+        : model.avgLatencyMs + " ms"
+    ],
+    ["Task Success Rate", model.taskSuccessRate],
+    ["Capabilities", model.capabilities]
+  ];
+
+  details.forEach(([label, value]) => {
+    const row = document.createElement("div");
+    row.className = "detail";
+    row.style.background = "#152238";
+row.style.padding = "14px";
+row.style.border = "1px solid #263750";
+row.style.borderRadius = "10px";
+    row.style.marginTop = "15px";
+
+    const heading = document.createElement("div");
+    heading.textContent = label;
+
+    const result = document.createElement("strong");
+    result.textContent = showValue(value);
+if (label === "Serving Status") {
+  result.style.fontWeight = "700";
+  result.style.color =
+    value === "Serving" ? "#46d7a0" : "#ff727e";
+}
+if (label === "Model Hash" && model.modelHash) {
+  const copyBtn = document.createElement("button");
+  copyBtn.textContent = "Copy Hash";
+  copyBtn.style.marginTop = "10px";
+
+  copyBtn.onclick = async () => {
+    try {
+      await navigator.clipboard.writeText(model.modelHash);
+      copyBtn.textContent = "Copied!";
+    } catch {
+      copyBtn.textContent = "Copy failed";
+    }
+  };
+
+  row.appendChild(copyBtn);
+}
+    row.append(heading, result);
+    content.appendChild(row);
+  });
+
+  modal.style.display = "block";
+  document.body.style.overflow = "hidden";
+}
+
+function closeModelDetails() {
+  byId("modelModal").style.display = "none";
+  document.body.style.overflow = "";
+}
+
+/* MODEL EXPLORER */
 
 function renderModels() {
   const query = byId("modelSearch").value.trim().toLowerCase();
@@ -340,206 +866,353 @@ function renderModels() {
 
   const filtered = state.models.filter(model => {
     const name = modelName(model).toLowerCase();
-    const hash = safeText(model.modelHash, "").toLowerCase();
-    const matchesSearch = name.includes(query) || hash.includes(query);
-    const serving = model.served === true || Number(model.onlineMinerCount) > 0;
-    const matchesFilter = filter === "all" ||
+
+    const hash = safeText(
+      model.modelHash,
+      ""
+    ).toLowerCase();
+
+    const matchesSearch =
+      name.includes(query) || hash.includes(query);
+
+    const serving =
+      model.served === true ||
+      Number(model.onlineMinerCount) > 0;
+
+    const matchesFilter =
+      filter === "all" ||
       (filter === "serving" && serving) ||
       (filter === "not-serving" && !serving);
+
     return matchesSearch && matchesFilter;
   });
 
   byId("modelSummary").textContent =
-    state.models.length + " registered model records · " +
-    filtered.length + " shown · Serving status is based on the returned API data.";
+    state.models.length +
+    " registered model records · " +
+    filtered.length +
+    " shown · Serving status is based on the returned API data.";
 
   const container = byId("modelList");
+
   container.replaceChildren();
 
   if (!filtered.length) {
     const empty = document.createElement("div");
+
     empty.className = "message";
+
     empty.textContent = state.models.length
       ? "No models match this filter."
       : "No model records were returned by the FLOP service.";
+
     container.appendChild(empty);
     return;
   }
 
   filtered.forEach(model => {
     const card = document.createElement("article");
+
     card.className = "model";
+    card.style.cursor = "pointer";
+    card.onclick = () => showModelDetails(model);
 
     const title = document.createElement("h3");
     title.textContent = modelName(model);
 
     const hash = document.createElement("div");
+
     hash.className = "model-id";
-    hash.textContent = "Hash: " + safeText(model.modelHash, "Not supplied");
+
+    hash.textContent =
+      "Hash: " + safeText(model.modelHash, "Not supplied");
 
     const pills = document.createElement("div");
     pills.className = "pills";
 
-    const serving = model.served === true || Number(model.onlineMinerCount) > 0;
+    const serving =
+      model.served === true ||
+      Number(model.onlineMinerCount) > 0;
+
     const status = document.createElement("span");
-    status.className = "pill " + (serving ? "good" : "bad");
-    status.textContent = serving ? "Serving" : "Not currently serving";
+
+    status.className =
+      "pill " + (serving ? "good" : "bad");
+
+    status.textContent =
+      serving ? "Serving" : "Not currently serving";
+
     pills.appendChild(status);
 
     const count = document.createElement("span");
+
     count.className = "pill";
-    count.textContent = "Online miners: " + numberText(model.onlineMinerCount);
+
+    count.textContent =
+      "Online miners: " + numberText(model.onlineMinerCount);
+
     pills.appendChild(count);
 
     const details = document.createElement("div");
     details.className = "details";
 
     const entries = [
-      ["GPU / TEE", (model.teePlatforms || []).join(", ") || "Not reported"],
-      ["Average latency", model.avgLatencyMs == null ? "Not reported" : model.avgLatencyMs + " ms"],
-      ["Success rate", model.taskSuccessRate == null ? "Not reported" : model.taskSuccessRate],
-      ["Capabilities", (model.capabilities || []).join(", ") || "Not reported"]
+      [
+        "GPU / TEE",
+        Array.isArray(model.teePlatforms)
+          ? model.teePlatforms.join(", ")
+          : safeText(model.teePlatforms, "Not reported")
+      ],
+      [
+        "Average latency",
+        model.avgLatencyMs == null
+          ? "Not reported"
+          : model.avgLatencyMs + " ms"
+      ],
+      [
+        "Success rate",
+        safeText(model.taskSuccessRate, "Not reported")
+      ],
+      [
+        "Capabilities",
+        Array.isArray(model.capabilities)
+          ? model.capabilities.join(", ")
+          : safeText(model.capabilities, "Not reported")
+      ]
     ];
 
     entries.forEach(([label, value]) => {
       const item = document.createElement("div");
       item.className = "detail";
+
       const strong = document.createElement("strong");
       strong.textContent = safeText(value, "Not reported");
-      item.append(document.createTextNode(label), strong);
+
+      item.append(
+        document.createTextNode(label),
+        strong
+      );
+
       details.appendChild(item);
     });
 
     card.append(title, hash, pills, details);
+
     container.appendChild(card);
   });
 }
 
 function updateModels(raw) {
   const data = unwrap(raw);
-  state.models = findArray(data, ["models", "data", "results"]);
+
+  state.models = findArray(
+    data,
+    ["models", "data", "results"]
+  );
+
   renderModels();
 }
 
+/* PRICING COMPARISON */
+
 function updatePricing(raw) {
   const data = unwrap(raw);
-  state.pricing = findArray(data, ["comparison", "prices", "models", "data"]);
+
+  state.pricing = findArray(
+    data,
+    ["comparison", "prices", "models", "data"]
+  );
 
   const container = byId("pricingTable");
+
   container.replaceChildren();
 
   if (!state.pricing.length) {
     const message = document.createElement("div");
+
     message.className = "message";
-    message.textContent = "No pricing comparison records were returned.";
+
+    message.textContent =
+      "No pricing comparison records were returned.";
+
     container.appendChild(message);
     return;
   }
 
   const wrap = document.createElement("div");
   wrap.className = "table-wrap";
+
   const table = document.createElement("table");
   const thead = document.createElement("thead");
   const header = document.createElement("tr");
 
-  ["Model", "Parameters (B)", "Estimated Cost", "Price per GFLOP"].forEach(label => {
+  [
+    "Model",
+    "Parameters (B)",
+    "Estimated Cost",
+    "Price per GFLOP"
+  ].forEach(label => {
     const th = document.createElement("th");
+
     th.textContent = label;
+
     header.appendChild(th);
   });
 
   thead.appendChild(header);
+
   const tbody = document.createElement("tbody");
 
   state.pricing.forEach(item => {
     const tr = document.createElement("tr");
+
     const values = [
       item.modelName || item.name || "Unnamed model",
       numberText(item.paramsBillion),
-      item.estimatedCost == null ? "—" : item.estimatedCost + " FLOP",
+      item.estimatedCost == null
+        ? "—"
+        : item.estimatedCost + " FLOP",
       safeText(item.pricePerGflop)
     ];
 
     values.forEach(value => {
       const td = document.createElement("td");
+
       td.textContent = value;
+
       tr.appendChild(td);
     });
+
     tbody.appendChild(tr);
   });
 
   table.append(thead, tbody);
+
   wrap.appendChild(table);
+
   container.appendChild(wrap);
 }
 
+/* DASHBOARD REFRESH */
+
 async function refreshDashboard() {
   const button = byId("refreshBtn");
+
   button.disabled = true;
   button.textContent = "Refreshing...";
-  byId("updated").textContent = "Fetching latest data...";
+
+  byId("updated").textContent =
+    "Fetching latest data...";
 
   let successCount = 0;
 
   const jobs = [
     {
       path: "/api/health",
+
       run: data => {
-        const healthText = JSON.stringify(data).toLowerCase();
-        const healthy = healthText.includes("connected") ||
+        const healthText =
+          JSON.stringify(data).toLowerCase();
+
+        const healthy =
+          healthText.includes("connected") ||
           healthText.includes('"ok"') ||
           healthText.includes('"status":"healthy"') ||
           healthText.includes('"status": "healthy"');
-        setMetric("health", healthy ? "Connected" : "Response received");
-        byId("connection").textContent = "MCP CONNECTED";
+
+        setMetric(
+          "health",
+          healthy ? "Connected" : "Response received"
+        );
+
+        byId("connection").textContent =
+          "MCP CONNECTED";
+
         byId("connection").classList.add("online");
       }
     },
+
     { path: "/api/stats", run: updateStats },
     { path: "/api/models", run: updateModels },
     { path: "/api/pricing", run: updatePricing }
   ];
 
-  const results = await Promise.allSettled(jobs.map(async job => {
-    const data = await apiGet(job.path);
-    job.run(data);
-    return job.path;
-  }));
+  const results = await Promise.allSettled(
+    jobs.map(async job => {
+      const data = await apiGet(job.path);
+
+      job.run(data);
+
+      return job.path;
+    })
+  );
 
   results.forEach((result, index) => {
     if (result.status === "fulfilled") {
       successCount++;
     } else {
-      console.error(jobs[index].path, result.reason);
+      console.error(
+        jobs[index].path,
+        result.reason
+      );
+
       if (jobs[index].path === "/api/health") {
         setMetric("health", "Unavailable");
-        byId("connection").textContent = "MCP UNAVAILABLE";
+
+        byId("connection").textContent =
+          "MCP UNAVAILABLE";
+
         byId("connection").classList.remove("online");
       }
+
       if (jobs[index].path === "/api/stats") {
-        byId("statsMessage").textContent = "Could not load statistics: " + result.reason.message;
+        byId("statsMessage").textContent =
+          "Could not load statistics: " +
+          result.reason.message;
       }
+
       if (jobs[index].path === "/api/models") {
-        byId("modelSummary").textContent = "Could not load models: " + result.reason.message;
+        byId("modelSummary").textContent =
+          "Could not load models: " +
+          result.reason.message;
+
         state.models = [];
+
         renderModels();
       }
+
       if (jobs[index].path === "/api/pricing") {
-        byId("pricingTable").textContent = "Could not load pricing: " + result.reason.message;
+        byId("pricingTable").textContent =
+          "Could not load pricing: " +
+          result.reason.message;
       }
     }
   });
 
   state.lastUpdated = new Date();
+
   byId("updated").textContent =
-    "Last updated: " + state.lastUpdated.toLocaleString() +
-    " · " + successCount + "/4 data sources loaded";
+    "Last updated: " +
+    state.lastUpdated.toLocaleString() +
+    " · " +
+    successCount +
+    "/4 data sources loaded";
 
   button.disabled = false;
   button.textContent = "Refresh Data";
 }
 
+/* CLOSE POPUP WITH ESCAPE KEY */
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    closeModelDetails();
+  }
+});
+
 refreshDashboard();
+
 </script>
+
 </body>
 </html>
