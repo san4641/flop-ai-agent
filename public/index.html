@@ -295,6 +295,10 @@ footer{
   .metric-value{font-size:23px}
 }
 </style>
+
+<!-- QR CODE LIBRARY -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 </head>
 
 <body>
@@ -758,12 +762,16 @@ function showModelDetails(model) {
   byId("modalTitle").textContent = modelName(model);
 
   content.replaceChildren();
-content.style.display = "grid";
-content.style.gridTemplateColumns = "repeat(2, minmax(0, 1fr))";
-if (window.innerWidth <= 600) {
-  content.style.gridTemplateColumns = "1fr";
-}
-content.style.gap = "12px";
+
+  content.style.display = "grid";
+  content.style.gridTemplateColumns = "repeat(2, minmax(0, 1fr))";
+
+  if (window.innerWidth <= 600) {
+    content.style.gridTemplateColumns = "1fr";
+  }
+
+  content.style.gap = "12px";
+
   const showValue = value => {
     if (
       value === null ||
@@ -813,10 +821,11 @@ content.style.gap = "12px";
   details.forEach(([label, value]) => {
     const row = document.createElement("div");
     row.className = "detail";
+
     row.style.background = "#152238";
-row.style.padding = "14px";
-row.style.border = "1px solid #263750";
-row.style.borderRadius = "10px";
+    row.style.padding = "14px";
+    row.style.border = "1px solid #263750";
+    row.style.borderRadius = "10px";
     row.style.marginTop = "15px";
 
     const heading = document.createElement("div");
@@ -824,28 +833,76 @@ row.style.borderRadius = "10px";
 
     const result = document.createElement("strong");
     result.textContent = showValue(value);
-if (label === "Serving Status") {
-  result.style.fontWeight = "700";
-  result.style.color =
-    value === "Serving" ? "#46d7a0" : "#ff727e";
-}
-if (label === "Model Hash" && model.modelHash) {
-  const copyBtn = document.createElement("button");
-  copyBtn.textContent = "Copy Hash";
-  copyBtn.style.marginTop = "10px";
 
-  copyBtn.onclick = async () => {
-    try {
-      await navigator.clipboard.writeText(model.modelHash);
-      copyBtn.textContent = "Copied!";
-    } catch {
-      copyBtn.textContent = "Copy failed";
+    if (label === "Serving Status") {
+      result.style.fontWeight = "700";
+      result.style.color =
+        value === "Serving" ? "#46d7a0" : "#ff727e";
     }
-  };
 
-  row.appendChild(copyBtn);
-}
     row.append(heading, result);
+
+    if (label === "Model Hash" && model.modelHash) {
+      const copyBtn = document.createElement("button");
+      copyBtn.textContent = "Copy Hash";
+      copyBtn.style.marginTop = "10px";
+
+      copyBtn.onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(String(model.modelHash));
+          copyBtn.textContent = "Copied!";
+        } catch {
+          copyBtn.textContent = "Copy failed";
+        }
+      };
+
+      row.appendChild(copyBtn);
+
+      // QR CODE SECTION
+      const qrSection = document.createElement("div");
+      qrSection.style.display = "flex";
+      qrSection.style.flexDirection = "column";
+      qrSection.style.alignItems = "flex-start";
+      qrSection.style.gap = "8px";
+      qrSection.style.marginTop = "14px";
+
+      const qrLabel = document.createElement("div");
+      qrLabel.textContent = "Scan QR Code to read Model Hash";
+      qrLabel.style.color = "#91a6c3";
+      qrLabel.style.fontSize = "12px";
+
+      const qrTarget = document.createElement("div");
+      qrTarget.style.background = "#ffffff";
+      qrTarget.style.padding = "10px";
+      qrTarget.style.borderRadius = "8px";
+      qrTarget.style.width = "180px";
+      qrTarget.style.height = "180px";
+      qrTarget.style.display = "flex";
+      qrTarget.style.alignItems = "center";
+      qrTarget.style.justifyContent = "center";
+
+      qrSection.append(qrLabel, qrTarget);
+      row.appendChild(qrSection);
+
+      if (typeof QRCode !== "undefined") {
+        new QRCode(qrTarget, {
+          text: String(model.modelHash),
+          width: 160,
+          height: 160,
+          colorDark: "#080d18",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      } else {
+        qrTarget.textContent =
+          "QR code could not load. Check your internet connection and refresh.";
+        qrTarget.style.color = "#080d18";
+        qrTarget.style.fontSize = "12px";
+        qrTarget.style.textAlign = "center";
+        qrTarget.style.padding = "14px";
+      }
+    }
+
     content.appendChild(row);
   });
 
@@ -921,7 +978,6 @@ function renderModels() {
     title.textContent = modelName(model);
 
     const hash = document.createElement("div");
-
     hash.className = "model-id";
 
     hash.textContent =
@@ -945,7 +1001,6 @@ function renderModels() {
     pills.appendChild(status);
 
     const count = document.createElement("span");
-
     count.className = "pill";
 
     count.textContent =
@@ -1087,9 +1142,7 @@ function updatePricing(raw) {
   });
 
   table.append(thead, tbody);
-
   wrap.appendChild(table);
-
   container.appendChild(wrap);
 }
 
