@@ -296,7 +296,6 @@ footer{
 }
 </style>
 
-<!-- QR CODE LIBRARY -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 </head>
@@ -753,6 +752,49 @@ function modelName(model) {
     "Unnamed model";
 }
 
+/* DOWNLOAD QR CODE AS PNG */
+
+function downloadQRCode(qrTarget, model) {
+  const canvas = qrTarget.querySelector("canvas");
+  const image = qrTarget.querySelector("img");
+
+  let dataUrl = "";
+
+  try {
+    if (canvas && canvas.width > 0 && canvas.height > 0) {
+      dataUrl = canvas.toDataURL("image/png");
+    } else if (
+      image &&
+      image.src &&
+      image.src.startsWith("data:image/")
+    ) {
+      dataUrl = image.src;
+    }
+  } catch (error) {
+    console.error("Could not prepare QR image:", error);
+  }
+
+  if (!dataUrl) {
+    alert("QR Code is not ready yet. Please try again.");
+    return false;
+  }
+
+  const safeName = modelName(model)
+    .replace(/[^a-z0-9_-]+/gi, "-")
+    .replace(/^-+|-+$/g, "") || "model";
+
+  const link = document.createElement("a");
+
+  link.href = dataUrl;
+  link.download = safeName + "-hash-qr.png";
+
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  return true;
+}
+
 /* FULL MODEL DETAILS POPUP */
 
 function showModelDetails(model) {
@@ -844,6 +886,7 @@ function showModelDetails(model) {
 
     if (label === "Model Hash" && model.modelHash) {
       const copyBtn = document.createElement("button");
+
       copyBtn.textContent = "Copy Hash";
       copyBtn.style.marginTop = "10px";
 
@@ -860,6 +903,7 @@ function showModelDetails(model) {
 
       // QR CODE SECTION
       const qrSection = document.createElement("div");
+
       qrSection.style.display = "flex";
       qrSection.style.flexDirection = "column";
       qrSection.style.alignItems = "flex-start";
@@ -867,11 +911,13 @@ function showModelDetails(model) {
       qrSection.style.marginTop = "14px";
 
       const qrLabel = document.createElement("div");
+
       qrLabel.textContent = "Scan QR Code to read Model Hash";
       qrLabel.style.color = "#91a6c3";
       qrLabel.style.fontSize = "12px";
 
       const qrTarget = document.createElement("div");
+
       qrTarget.style.background = "#ffffff";
       qrTarget.style.padding = "10px";
       qrTarget.style.borderRadius = "8px";
@@ -884,6 +930,8 @@ function showModelDetails(model) {
       qrSection.append(qrLabel, qrTarget);
       row.appendChild(qrSection);
 
+      let qrAvailable = false;
+
       if (typeof QRCode !== "undefined") {
         new QRCode(qrTarget, {
           text: String(model.modelHash),
@@ -893,14 +941,39 @@ function showModelDetails(model) {
           colorLight: "#ffffff",
           correctLevel: QRCode.CorrectLevel.M
         });
+
+        qrAvailable = true;
       } else {
         qrTarget.textContent =
           "QR code could not load. Check your internet connection and refresh.";
+
         qrTarget.style.color = "#080d18";
         qrTarget.style.fontSize = "12px";
         qrTarget.style.textAlign = "center";
         qrTarget.style.padding = "14px";
+
+        qrAvailable = false;
       }
+
+      // DOWNLOAD QR PNG BUTTON
+      const downloadBtn = document.createElement("button");
+
+      downloadBtn.textContent = "Download QR PNG";
+      downloadBtn.style.marginTop = "5px";
+      downloadBtn.style.background = "#75aaff";
+      downloadBtn.style.color = "#071426";
+
+      downloadBtn.disabled = !qrAvailable;
+
+      downloadBtn.onclick = () => {
+        const downloaded = downloadQRCode(qrTarget, model);
+
+        if (downloaded) {
+          downloadBtn.textContent = "Downloaded!";
+        }
+      };
+
+      qrSection.appendChild(downloadBtn);
     }
 
     content.appendChild(row);
@@ -978,6 +1051,7 @@ function renderModels() {
     title.textContent = modelName(model);
 
     const hash = document.createElement("div");
+
     hash.className = "model-id";
 
     hash.textContent =
@@ -1001,6 +1075,7 @@ function renderModels() {
     pills.appendChild(status);
 
     const count = document.createElement("span");
+
     count.className = "pill";
 
     count.textContent =
@@ -1142,7 +1217,9 @@ function updatePricing(raw) {
   });
 
   table.append(thead, tbody);
+
   wrap.appendChild(table);
+
   container.appendChild(wrap);
 }
 
