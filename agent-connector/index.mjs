@@ -1,11 +1,14 @@
 
 import { FlopClient } from "@flop-labs/client";
 import { writeFile } from "node:fs/promises";
+
 import {
   valueOrNA,
   shorten,
   timestampToDate
 } from "./formatters.mjs";
+
+import { validateModel } from "./validation.mjs";
 
 const client = new FlopClient({});
 
@@ -130,6 +133,17 @@ async function main() {
           throw new Error("Model details were not returned.");
         }
 
+        // Validate model data before accepting it
+        const validation = validateModel(model);
+
+        if (!validation.valid) {
+          throw new Error(
+            `Model validation failed: ${validation.errors.join("; ")}`
+          );
+        }
+
+        console.log("Model validation successful:", model.id);
+
         results.push({
           status: "success",
           model
@@ -182,6 +196,7 @@ async function main() {
     console.log("\n========================================");
     console.log("TOTAL MODELS:", models.length);
     console.log("DETAILS FETCHED:", successfulModels.length);
+
     console.log(
       "FAILED:",
       results.filter(item => item.status === "error").length
