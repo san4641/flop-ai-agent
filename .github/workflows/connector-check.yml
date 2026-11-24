@@ -1,0 +1,35 @@
+name: FLOP Agent Connector Checks
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "agent-connector/**"
+      - ".github/workflows/connector-check.yml"
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "agent-connector/**"
+      - ".github/workflows/connector-check.yml"
+
+  workflow_dispatch:
+
+jobs:
+  syntax-check:
+    name: JavaScript Syntax Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Check connector syntax
+        run: node --check agent-connector/index.mjs
