@@ -19,7 +19,7 @@ on:
 
 jobs:
   syntax-check:
-    name: JavaScript Syntax Check
+    name: JavaScript Syntax and Unit Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -31,5 +31,11 @@ jobs:
         with:
           node-version: "24"
 
-      - name: Check connector syntax
+      - name: Check main connector syntax
         run: node --check agent-connector/index.mjs
+
+      - name: Check formatter module syntax
+        run: node --check agent-connector/formatters.mjs
+
+      - name: Run formatter unit tests
+        run: node --test agent-connector/test/*.test.mjs
