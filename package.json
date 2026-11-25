@@ -1,5 +1,4 @@
 
-
 {
   "name": "flop-ai-agent",
   "version": "1.0.0",
@@ -11,7 +10,9 @@
     "agent": "node agent.mjs",
     "research": "node research.mjs",
     "mcp-check": "node mcp-check.mjs",
-    "check-models": "node check-models.mjs"
+    "check-models": "node check-models.mjs",
+    "check": "node --check agent-connector/index.mjs && node --check agent-connector/formatters.mjs && node --check agent-connector/validation.mjs",
+    "test": "node --test agent-connector/test/*.test.mjs"
   },
   "keywords": [
     "flop",
@@ -26,4 +27,3 @@
     "@flop-labs/client": "^0.2.2"
   }
 }
-
