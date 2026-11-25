@@ -15,6 +15,7 @@ The connector uses the `@flop-labs/client` SDK to list available models, retriev
 - Handles missing or invalid values safely.
 - Saves the discovery results to a JSON report.
 - Includes automated unit tests for formatting and model validation.
+- Provides simple npm scripts for syntax checks and unit tests.
 - Uses GitHub Actions for automated syntax checks and testing.
 
 ## Requirements
@@ -42,6 +43,12 @@ Install the project dependencies:
 
 ```bash
 npm install
+```
+
+On Windows PowerShell, use:
+
+```powershell
+npm.cmd install
 ```
 
 ## Project Structure
@@ -118,7 +125,13 @@ Missing or unavailable metadata is displayed as `Not reported`.
 Run all connector unit tests from the repository root:
 
 ```bash
-node --test agent-connector/test/*.test.mjs
+npm test
+```
+
+On Windows PowerShell, use:
+
+```powershell
+npm.cmd test
 ```
 
 Run formatter tests separately:
@@ -139,13 +152,39 @@ node --test agent-connector/test/validation.test.mjs
 |---|---:|
 | Formatter Utilities | 11 |
 | Model Validation | 11 |
-| Total | 22 |
+| **Total** | **22** |
 
 The current test suite has passed all 22 tests.
 
+Expected test summary:
+
+```text
+tests 22
+pass 22
+fail 0
+```
+
 ## Syntax Checks
 
-Run the JavaScript syntax checks:
+Run all connector syntax checks from the repository root:
+
+```bash
+npm run check
+```
+
+On Windows PowerShell, use:
+
+```powershell
+npm.cmd run check
+```
+
+The check command verifies:
+
+- Main connector syntax (`index.mjs`).
+- Formatter module syntax (`formatters.mjs`).
+- Model validation module syntax (`validation.mjs`).
+
+Individual syntax checks can also be run manually:
 
 ```bash
 node --check agent-connector/index.mjs
@@ -153,9 +192,34 @@ node --check agent-connector/formatters.mjs
 node --check agent-connector/validation.mjs
 ```
 
+## Available npm Scripts
+
+The following commands are available from the repository root:
+
+| Command | Purpose |
+|---|---|
+| `npm start` | Starts the main application server |
+| `npm run dashboard` | Starts the dashboard server |
+| `npm test` | Runs all connector unit tests |
+| `npm run check` | Checks connector JavaScript syntax |
+| `npm run agent` | Runs the agent script |
+| `npm run research` | Runs the research script |
+| `npm run mcp-check` | Runs the MCP check script |
+| `npm run check-models` | Runs the model check script |
+
+For Windows PowerShell, prefix npm commands with `npm.cmd`.
+
 ## Continuous Integration
 
 GitHub Actions automatically checks the connector when relevant changes are pushed to the `main` branch or submitted through a pull request.
+
+The workflow is triggered by changes to:
+
+- `agent-connector/**`
+- `package.json`
+- `.github/workflows/connector-check.yml`
+
+It can also be started manually using `workflow_dispatch`.
 
 The workflow performs:
 
@@ -200,6 +264,7 @@ The report is generated locally when the connector runs.
 - Pricing values are metadata returned by the Gateway, not guaranteed payment quotes.
 - A discovered model is not necessarily an actively serving model.
 - Missing metadata is not treated as a fabricated value.
+- The JSON discovery report is generated locally and is not automatically uploaded to GitHub.
 
 ## Contributing
 
@@ -210,8 +275,9 @@ To contribute:
 1. Fork the repository.
 2. Create a new branch for your changes.
 3. Make your changes and add appropriate tests.
-4. Run the syntax checks and unit tests.
-5. Submit a pull request.
+4. Run the syntax checks using `npm run check`.
+5. Run the unit tests using `npm test`.
+6. Submit a pull request.
 
 Please keep changes focused, testable, and documented.
 
